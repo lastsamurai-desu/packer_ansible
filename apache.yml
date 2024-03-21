@@ -1,0 +1,18 @@
+---
+- name: Provision AMI 
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+
+  tasks:
+    - debug:
+        var: ansible_distribution
+        
+    - name: Install Apache2/HTTPD on Ubuntu/Redhat
+      package:
+        name: "{{ apache_package }}"
+        state: present
+      vars:
+        apache_package: "{{ 'apache2' if ansible_distribution == 'Ubuntu' else 'httpd' if ansible_distribution == 'RedHat' else '' }}"
+      when: ansible_distribution in ['Ubuntu', 'RedHat']
